@@ -5,7 +5,7 @@ use discord_game_sdk::Error;
 use super::activity_update::ActivityUpdate;
 #[derive(NativeClass)]
 #[derive(Default)]
-#[inherit(Node)]
+#[inherit(Reference)]
 pub struct DiscordController {
     discord: Option<Discord<'static, MyEventHandler>>
 }
@@ -15,7 +15,7 @@ impl EventHandler for MyEventHandler {
 }
 
 impl DiscordController {
-    fn new(_owner: &Node) -> Self {
+    fn new(_owner: &Reference) -> Self {
         DiscordController {
             discord: None
         }
@@ -24,9 +24,14 @@ impl DiscordController {
 
 #[methods]
 impl DiscordController {
+    /// Exposes discord's update_activity to GDScript
+    ///
+    /// # Arguments
+    ///
+    /// * `game_id` - The discord client ID for this application
     #[export]
-    fn _ready(&mut self, _owner: &Node) {
-        match Discord::new(733416106123067465) {
+    pub fn init_discord(&mut self, _owner: &Reference, game_id: i64) {
+        match Discord::new(game_id) {
             Ok(mut discord) => {
                 *discord.event_handler_mut() = Some(MyEventHandler);
                 godot_print!("Discord OK!");
@@ -37,8 +42,9 @@ impl DiscordController {
             }
         }
     }
+    /// Exposes discord's runn_callbacks to GDScript, you should call this in _process on any node
     #[export]
-    fn _process(&mut self, _owner: &Node, _delta: f64) {
+    pub fn run_callbacks(&mut self, _owner: &Reference) {
         match &mut self.discord {
             Some(discord) => {
                 if let Err(Error::NotRunning) = discord.run_callbacks() {
@@ -55,7 +61,7 @@ impl DiscordController {
     ///
     /// * `activity` - The ActivityUpdate struct (GDScript users see ActivityUpdate for dictionary fields)
     #[export]
-    pub fn update_activity(&mut self, _owner: &Node, activity: ActivityUpdate) {
+    pub fn update_activity(&mut self, _owner: &Reference, activity: ActivityUpdate) {
         match &mut self.discord {
             Some(discord) => {
                 discord.update_activity(
