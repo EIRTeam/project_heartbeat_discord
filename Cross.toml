@@ -1,0 +1,7 @@
+[build.env]
+passthrough = [
+    "DISCORD_GAME_SDK_PATH"
+]
+volumes = [
+    "DISCORD_GAME_SDK_PATH_CROSS"
+]
