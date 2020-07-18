@@ -1,0 +1,14 @@
+[package]
+name = "project_heartbeat_discord"
+description = "Project Heartbeat specific discord SDK bindings"
+version = "0.1.0"
+authors = ["Álex Román Núñez <eirexe123@gmail.com>"]
+edition = "2018"
+license = "AGPL-3.0-or-later"
+license-file = "LICENSE"
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+gdnative = "0.9.0-preview.0"
+discord_game_sdk = "1.0.0"
