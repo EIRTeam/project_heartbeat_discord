@@ -31,15 +31,16 @@ impl DiscordController {
     /// * `game_id` - The discord client ID for this application
     #[export]
     pub fn init_discord(&mut self, _owner: &Reference, game_id: i64) -> i64 {
-        match Discord::new(game_id) {
+        match Discord::with_create_flags(game_id, discord_game_sdk::CreateFlags::NoRequireDiscord) {
             Ok(mut discord) => {
-                *discord.event_handler_mut() = Some(MyEventHandler);
                 godot_print!("Discord OK!");
+                *discord.event_handler_mut() = Some(MyEventHandler);
                 self.discord = Some(discord);
                 return 0;
             }
             Err(err) => {
-                godot_error!("Error initializing discord: {:?}", err)
+                godot_error!("Discord init error");
+                godot_error!("Error initializing discord: {:?}", err);
             }
         }
         2
