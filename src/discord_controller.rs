@@ -29,8 +29,8 @@ impl DiscordController {
     /// # Arguments
     ///
     /// * `game_id` - The discord client ID for this application
-    #[export]
-    pub fn init_discord(&mut self, _owner: &Reference, game_id: i64) -> i64 {
+    #[godot]
+    pub fn init_discord(&mut self, #[base] _owner: &Reference, game_id: i64) -> i64 {
         match Discord::with_create_flags(game_id, discord_game_sdk::CreateFlags::NoRequireDiscord) {
             Ok(mut discord) => {
                 godot_print!("Discord OK!");
@@ -46,8 +46,8 @@ impl DiscordController {
         2
     }
     /// Exposes discord's runn_callbacks to GDScript, you should call this in _process on any node
-    #[export]
-    pub fn run_callbacks(&mut self, _owner: &Reference) {
+    #[godot]
+    pub fn run_callbacks(&mut self, #[base] _owner: &Reference) {
         match &mut self.discord {
             Some(discord) => {
                 if let Err(Error::NotRunning) = discord.run_callbacks() {
@@ -63,8 +63,8 @@ impl DiscordController {
     /// # Arguments
     ///
     /// * `activity` - The ActivityUpdate struct (GDScript users see ActivityUpdate for dictionary fields)
-    #[export]
-    pub fn update_activity(&mut self, _owner: &Reference, activity: ActivityUpdate) {
+    #[godot]
+    pub fn update_activity(&mut self, #[base] _owner: &Reference, activity: ActivityUpdate) {
         match &mut self.discord {
             Some(discord) => {
                 discord.update_activity(
